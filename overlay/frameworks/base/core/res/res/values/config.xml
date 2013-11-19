@@ -185,14 +185,14 @@
 
     <integer name="config_lidKeyboardAccessibility">1</integer>
 
-    <bool name="config_hasDockBattery">true</bool>
+    <!-- <bool name="config_hasDockBattery">true</bool> -->
 
-    <string name="config_deviceHandlersLib" translatable="false">
+    <!--<string name="config_deviceHandlersLib" translatable="false">
         /system/framework/com.cyanogenmod.asusdec.jar</string>
     <string name="config_deviceDockBatteryHandlerClass" translatable="false">
         com.cyanogenmod.asusdec.DockBatteryHandler</string>
     <string name="config_deviceKeyHandlerClass" translatable="false">
-        com.cyanogenmod.asusdec.KeyHandler</string>
+        com.cyanogenmod.asusdec.KeyHandler</string>-->
 
     <bool name="config_screenOffAnimation">false</bool>
 
@@ -215,4 +215,18 @@
 
     <!-- Set to true to add links to Cell Broadcast app from Settings and MMS app. -->
     <bool name="config_cellBroadcastAppLinks">false</bool>
+
+    <!-- Device supports LED flashlight -->
+    <bool name="config_enableTorch">true</bool>
+
+    <!-- Defines the system property to set for performance profile xe: sys.cpu.modes. Leave it
+         blank if the device do not support performance profiles -->
+    <!--<string name="config_perf_profile_prop" translatable="false">sys.cpu.mode</string>-->
+
+    <!-- When config_perf_profile_prop is defined, this value MUST be the index of
+         one of the listes values in frameworks/base/core/res/res/values/cm_arrays.xml
+         for "perf_profile_values" array. Leave it blank if the device do not support
+         performance profiles  -->
+    <!--<string name="config_perf_profile_default_entry" translatable="false">1</string>-->
+
 </resources>

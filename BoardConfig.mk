@@ -50,6 +50,7 @@ BOARD_KERNEL_PAGESIZE :=
 # EGL settings
 BOARD_EGL_CFG := device/asus/tf700t/configs/egl.cfg
 USE_OPENGL_RENDERER := true
+BOARD_HAVE_PIXEL_FORMAT_INFO := true
 
 # Misc display settings
 BOARD_USE_SKIA_LCDTEXT := true
@@ -64,6 +65,9 @@ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR ?= device/asus/tf700t/bluetooth
 # Support for dock battery
 TARGET_HAS_DOCK_BATTERY := true
 
+# Misc flags
+COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
+
 # Wifi related defines
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 WPA_SUPPLICANT_VERSION      := VER_0_8_X
@@ -74,7 +78,7 @@ BOARD_WLAN_DEVICE           := bcmdhd
 WIFI_DRIVER_FW_PATH_PARAM   := "/sys/module/bcmdhd/parameters/firmware_path"
 WIFI_DRIVER_FW_PATH_STA     := "/system/vendor/firmware/bcm4330/fw_bcmdhd.bin"
 WIFI_DRIVER_FW_PATH_AP      := "/system/vendor/firmware/bcm4330/fw_bcmdhd_apsta.bin"
-WIFI_DRIVER_FW_PATH_P2P     := "/system/vendor/firmware/bcm4330/fw_bcmdhd_p2p.bin"
+# WIFI_DRIVER_FW_PATH_P2P     := "/system/vendor/firmware/bcm4330/fw_bcmdhd_p2p.bin"
 
 TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 8388608
@@ -102,12 +106,22 @@ BOARD_RECOVERY_SWIPE := true
 
 # SELINUX Defines
 BOARD_SEPOLICY_DIRS := \
-    device/asus/tf700t/selinux
+    device/asus/tf700t/sepolicy
 
 BOARD_SEPOLICY_UNION := \
     file_contexts \
-    file.te \
+    genfs_contexts \
+    app.te \
+    btmacreader.te \
     device.te \
-    domain.te
+    drmserver.te \
+    init_shell.te \
+    file.te \
+    rild.te \
+    sensors_config.te \
+    shell.te \
+    surfaceflinger.te \
+    system.te \
+    zygote.te
 
 BOARD_HARDWARE_CLASS := device/asus/tf700t/cmhw/
