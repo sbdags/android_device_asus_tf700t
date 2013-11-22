@@ -5,10 +5,10 @@ on early-init
     mount debugfs debugfs /sys/kernel/debug
 
 on init
-    # for backwards compatibility
+    # See storage config details at http://source.android.com/devices/tech/storage/index.html
     mkdir /mnt/shell/emulated 0700 shell shell
     mkdir /storage/emulated 0555 root root
-    mkdir /storage 0550 system sdcard_r
+
     export EXTERNAL_STORAGE /storage/emulated/legacy
     export EMULATED_STORAGE_SOURCE /mnt/shell/emulated
     export EMULATED_STORAGE_TARGET /storage/emulated
@@ -23,15 +23,20 @@ on init
     export SECONDARY_STORAGE /storage/sdcard1
  
     # make the pathes for the external media mounts
-    mkdir /storage/sdcard1 0000 system system
-    mkdir /storage/sdcard2 0000 system system
-    mkdir /storage/usbdisk0 0000 system system
-    mkdir /storage/usbdisk1 0000 system system
+    mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
+    mkdir /mnt/media_rw/sdcard2 0700 media_rw media_rw
+    mkdir /mnt/media_rw/usbdisk0 0700 media_rw media_rw
+    mkdir /mnt/media_rw/usbdisk1 0700 media_rw media_rw
+    mkdir /storage/sdcard1 0700 root root
+    mkdir /storage/sdcard2 0700 root root
+    mkdir /storage/usbdisk0 0700 root root
+    mkdir /storage/usbdisk1 0700 root root
 
 on fs
     setprop ro.crypto.tmpfs_options size=128m,mode=0771,uid=1000,gid=1000
     setprop ro.crypto.umount_sd false
     mount_all /fstab.cardhu
+    restorecon /dev/block/platform/sdhci-tegra.3/by-name/PER
 
 on post-fs-data
     mkdir /data/misc/wifi 0770 wifi wifi
@@ -46,10 +51,16 @@ on post-fs-data
     mkdir /data/media 0770 media_rw media_rw
     chown media_rw media_rw /data/media
 
+    # bdaddwriter
+    mkdir /data/mac
+
     # Set indication (checked by vold) that we have finished this action
     setprop vold.post_fs_data_done 1
 
 on boot
+
+# fs
+    write /sys/module/sync/parameters/fsync_enabled 1
 
 # bluetooth
     # change back to bluetooth from system
@@ -65,6 +76,8 @@ on boot
     write /sys/class/rfkill/rfkill0/state 0
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
     chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
+    restorecon /sys/class/rfkill/rfkill0/state
+    restorecon /sys/class/rfkill/rfkill0/type
 
     # bluetooth MAC address programming
     chown bluetooth net_bt_stack ro.bt.bdaddr_path
@@ -150,10 +163,27 @@ on boot
     chown system system /sys/devices/system/cpu/cpufreq/interactive/go_maxspeed_load
     chown system system /sys/devices/system/cpu/cpufreq/interactive/max_boost
 
+    restorecon /sys/devices/system/cpu
+    restorecon /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/above_hispeed_delay
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/boost
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/boost_factor
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/go_hispeed_load
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/go_maxspeed_load
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/input_boost
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/io_is_busy
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/max_boost
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/min_sample_time
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/sustain_load
+    restorecon /sys/devices/system/cpu/cpufreq/interactive/timer_rate
+    restorecon /sys/devices/tegradc.0/smartdimmer/aggressiveness
+    restorecon /sys/devices/tegradc.0/smartdimmer/enable
+
 # Set battery poll interval
     write /sys/module/bq27x00_battery/parameters/poll_interval 30
 
-# Setup CPU for "balanced" mode 
+# Setup CPU for "balanced" mode
     setprop sys.cpu.mode 1
 
 # We dont want to swap keys unless needed
@@ -328,6 +358,22 @@ service iprenew_rmnet1 /system/bin/dhcpcd -n
 # underlying files in /data/media wil be created with user and group media_rw (1023)
 service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
     class late_start
+
+service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
+    class late_start
+    disabled
+
+service fuse_sdcard2 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/sdcard2 /storage/sdcard2
+    class late_start
+    disabled
+
+service fuse_usbdisk0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdisk0 /storage/usbdisk0
+    class late_start
+    disabled
+
+service fuse_usbdisk1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdisk1 /storage/usbdisk1
+    class late_start
+    disabled
 
 # Start GPS daemon
   on boot
