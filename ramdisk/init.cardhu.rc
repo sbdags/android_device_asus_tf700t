@@ -21,7 +21,7 @@ on init
 
     # Enable secondary storage
     export SECONDARY_STORAGE /storage/sdcard1
- 
+
     # make the pathes for the external media mounts
     mkdir /mnt/media_rw/sdcard1 0700 media_rw media_rw
     mkdir /mnt/media_rw/sdcard2 0700 media_rw media_rw
@@ -374,6 +374,15 @@ service fuse_usbdisk0 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdis
 service fuse_usbdisk1 /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usbdisk1 /storage/usbdisk1
     class late_start
     disabled
+
+# bugreport is triggered by the VOLUME-DOWN and VOLUME-UP keys
+service bugreport /system/bin/dumpstate -d -p -B \
+        -o /data/data/com.android.shell/files/bugreports/bugreport \
+        -b /system/media/audio/ui/Dock.ogg -e /system/media/audio/ui/Undock.ogg
+    class main
+    disabled
+    oneshot
+    keycodes 115 114
 
 # Start GPS daemon
   on boot
