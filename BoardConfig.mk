@@ -19,12 +19,15 @@ USE_PROPRIETARY_AUDIO_EXTENSIONS := true
 BOARD_USES_GENERIC_AUDIO := false
 BOARD_USES_ALSA_AUDIO := false
 BOARD_USES_TINY_AUDIO_HW := false
+BOARD_HAVE_PRE_KITKAT_AUDIO_BLOB := true
 
 # Camera options
 COMMON_GLOBAL_CFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
 
-# Dumpstate
-BOARD_HAL_STATIC_LIBRARIES := libdumpstate.cardhu
+# Cardhu HAL libraries
+BOARD_HAL_STATIC_LIBRARIES := \
+    libdumpstate.cardhu \
+    libhealthd.cardhu
 
 # inherit from the proprietary version
 -include vendor/asus/tf700t/BoardConfigVendor.mk
@@ -67,9 +70,6 @@ BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
 BOARD_BLUEDROID_VENDOR_CONF := device/asus/tf700t/bluetooth/vnd_tf700t.txt
 BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR ?= device/asus/tf700t/bluetooth
-
-# Support for dock battery
-TARGET_HAS_DOCK_BATTERY := true
 
 # Wifi related defines
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
