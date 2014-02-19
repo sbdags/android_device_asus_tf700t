@@ -15,3 +15,4 @@
 #
 
 add_lunch_combo full_tf700t-userdebug
+add_lunch_combo crombix_tf700t-userdebug
