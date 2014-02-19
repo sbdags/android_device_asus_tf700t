@@ -29,7 +29,7 @@ $(call inherit-product, device/asus/tf700t/device_tf700t.mk)
 # Setup device specific product configuration.
 #
 PRODUCT_BUILD_PROP_OVERRIDES += BUILD_UTC_DATE=0
-PRODUCT_NAME := crombix_tf700t
+PRODUCT_NAME := CROMBI-X_tf700t
 PRODUCT_BRAND := asus
 PRODUCT_DEVICE := tf700t
 PRODUCT_MODEL := ASUS Transformer Pad TF700T
